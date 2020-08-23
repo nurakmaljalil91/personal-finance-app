@@ -1,0 +1,8 @@
+PersonalFinanceWebApi/PersonalFinanceWebApi/bin
+PersonalFinanceWebApi/PersonalFinanceWebApi/obj
+PersonalFinanceWebApi/.vs
+
+personal-finance-webapp-vue/node_modules
+personal-finance-webapp-vue/.vscode
+
+.vscode
