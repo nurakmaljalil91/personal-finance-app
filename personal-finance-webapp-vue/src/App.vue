@@ -20,6 +20,7 @@ export default {
 
 <style>
 #app {
+  background-color: #DBF2FB;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
