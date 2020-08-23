@@ -1,18 +1,18 @@
 /* eslint-disable */
 import Axios from 'axios';
 
-const RESOURCE_NAME = '/api/Accounts';
+const RESOURCE_NAME = '/api/Transactions';
 
 export default {
     getAll() {
         return Axios.get(RESOURCE_NAME);
     },
 
-    getAccount(id) {
+    getTransaction(id) {
         return Axios.get(`${RESOURCE_NAME}/${id}`)
     },
 
-    postNewAccount(newAccount) {
+    postNewTransaction(newAccount) {
         return Axios.post(RESOURCE_NAME, newAccount)
     },
 
@@ -20,7 +20,7 @@ export default {
         return Axios.put(RESOURCE_NAME, newData)
     },
 
-    deleteAccount(id) {
+    deleteTransaction(id) {
         return Axios.delete(`${RESOURCE_NAME}/${id}`)
     }
 }
