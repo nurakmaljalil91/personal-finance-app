@@ -41,7 +41,8 @@ export default {
       this.newAccountData.latestDate = today
       this.newAccountData.balance = parseFloat(this.newAccountData.balance)
       AccountService.postNewAccount(this.newAccountData)
-      // console.log(this.newAccountData)
+       .then( this.$alert("New Account Added!", 'Success','success'))
+       .catch(error => (this.$alert("Something happened!", 'Warning','warning')))
     },
     clearForm () {
       // eslint-disable-next-line no-unused-expressions

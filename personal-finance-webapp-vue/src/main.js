@@ -5,6 +5,9 @@ import App from './App'
 import router from './router'
 import vuetify from '@/plugins/vuetify' // path to vuetify export
 import Axios from 'axios'
+import VueSimpleAlert from 'vue-simple-alert'
+
+Vue.use(VueSimpleAlert)
 
 Axios.defaults.baseURL = process.env.API_ENDPOINT
 

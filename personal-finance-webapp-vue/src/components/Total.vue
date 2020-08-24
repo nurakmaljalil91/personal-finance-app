@@ -8,8 +8,8 @@
       <v-icon color="red">fas fa-exclamation-triangle</v-icon>
       <p>error...</p>
     </div>
-    <div v-if="account != null">
-      <h1>Total Amount: {{ account[0].balance }} MYR</h1>
+    <div v-if="total != null">
+      <h1>Total Amount: {{ total }} MYR</h1>
     </div>
   </div>
 </template>
@@ -23,12 +23,23 @@ export default {
       account: null,
       loading: true,
       errored: false,
-      sum: null
+      sum: [],
+      total: null
     }
   },
   mounted () {
     Account.getAll()
-      .then(response => (this.account = response.data))
+      .then(response => {
+        this.account = response.data
+
+        this.account.forEach(element => {
+          this.sum.push(element.balance)
+        })
+        this.total = this.sum.reduce(function (a, b) {
+          return a + b
+        }, 0)
+        this.total = this.total.toFixed(2)
+      })
       .catch(error => {
         console.log(error)
         this.errored = true
