@@ -3,28 +3,61 @@
     <v-sheet>
       <h1>New Transaction</h1>
       <v-row>
-        <v-col lg="3"  md="3" sm="12" cols="12" class="align-self-start"><h2>Account ID</h2></v-col>
-        <v-col lg="9"  md="9" sm="12" cols="12" class="align-self-center">
-          <v-select label="Account ID" :items="accountList" v-model="transctionData.AccountId" filled outlined></v-select>
+        <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
+          <h2>Account ID</h2>
         </v-col>
-        <v-col lg="3"  md="3" sm="12" cols="12" class="align-self-start"><h2>Transfer Type</h2></v-col>
-        <v-col lg="9"  md="9" sm="12" cols="12" class="align-self-center">
-          <v-select label="Type" :items="transferTypes" v-model="transterTypeSelection"  filled outlined></v-select>
+        <v-col lg="9" md="9" sm="12" cols="12" class="align-self-center">
+          <v-select
+            label="Account ID"
+            :items="accountList"
+            v-model="transactionData.AccountId"
+            filled
+            outlined
+          ></v-select>
         </v-col>
-        <v-col lg="3"  md="3" sm="12" cols="12" class="align-self-start"><h2>Amount</h2></v-col>
-        <v-col lg="9"  md="9" sm="12" cols="12" class="align-self-center">
-          <v-text-field label="Amount" v-model="transctionDat.amount" single-line outlined></v-text-field>
+        <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
+          <h2>Transfer Type</h2>
         </v-col>
-        <v-col lg="3"  md="3" sm="12" cols="12" class="align-self-start"><h2>Type</h2></v-col>
-        <v-col lg="9"  md="9" sm="12" cols="12" class="align-self-center">
+        <v-col lg="9" md="9" sm="12" cols="12" class="align-self-center">
+          <v-select
+            label="Type"
+            :items="transferTypes"
+            v-model="transterTypeSelection"
+            filled
+            outlined
+          ></v-select>
+        </v-col>
+        <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
+          <h2>Amount</h2>
+        </v-col>
+        <v-col lg="9" md="9" sm="12" cols="12" class="align-self-center">
+          <v-text-field
+            label="Amount"
+            v-model="transactionData.amount"
+            type="number"
+            min="0"
+            single-line
+            outlined
+          ></v-text-field>
+        </v-col>
+        <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
+          <h2>Type</h2>
+        </v-col>
+        <v-col lg="9" md="9" sm="12" cols="12" class="align-self-center">
           <v-text-field label="Type" v-model="transactionData.Type" single-line outlined></v-text-field>
         </v-col>
-        <v-col lg="3"  md="3" sm="12" cols="12" class="align-self-start"><h2>Description</h2></v-col>
-        <v-col lg="9"  md="9" sm="12" cols="12" class="align-self-center">
+        <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
+          <h2>Description</h2>
+        </v-col>
+        <v-col lg="9" md="9" sm="12" cols="12" class="align-self-center">
           <v-text-field label="Description" v-model="transactionData.Desc" single-line outlined></v-text-field>
         </v-col>
-        <v-col cols="6"  class="align-self-center"> <v-btn color="primary" dark @click="submitForm">Submit</v-btn></v-col>
-        <v-col cols="6"  class="align-self-center"> <v-btn color="warning" dark>Clear</v-btn></v-col>
+        <v-col cols="6" class="align-self-center">
+          <v-btn color="primary" dark @click="submitForm">Submit</v-btn>
+        </v-col>
+        <v-col cols="6" class="align-self-center">
+          <v-btn color="warning" dark>Clear</v-btn>
+        </v-col>
       </v-row>
     </v-sheet>
   </div>
@@ -41,7 +74,7 @@ export default {
       transferTypes: ['Debit', 'Credit'],
       transterTypeSelection: null,
       accountList: [],
-      transctionData: {
+      transactionData: {
         Id: '',
         AccountId: '',
         TransDate: new Date(),
@@ -49,7 +82,10 @@ export default {
         TransType: null,
         Type: '',
         Desc: ''
-      }
+      },
+      currentBalance: 0.0,
+      newBalance: 0.0,
+      canCalculate: false
     }
   },
   mounted () {
@@ -77,23 +113,56 @@ export default {
       var yyyy = today.getFullYear()
       today = yyyy + '-' + mm + '-' + dd
       var iddate = dd + mm + yyyy + String(Math.floor(Math.random() * 101))
-      this.transctionData.Id = iddate
-      this.transctionData.TransDate = today
-      this.transctionData.amount = parseFloat(this.transctionData.amount)
+      this.transactionData.Id = iddate
+      this.transactionData.TransDate = today
+      this.transactionData.amount = parseFloat(this.transactionData.amount)
       if (this.transterTypeSelection === 'Debit') {
-        this.transctionData.TransType = 1
+        this.transactionData.TransType = 1
       } else {
-        this.transctionData.TransType = 2
+        this.transactionData.TransType = 2
       }
-      console.log(this.transctionData)
+      TransactionService.postNewTransaction(this.transactionData)
+        .then(this.$alert('New Transaction Added!', 'Success', 'success'))
+        .catch(error => {
+          console.log(error)
+          this.$alert('Something happened!', 'Warning', 'warning')
+        })
+        .finally(() => {
+          this.canCalculate = true
+          this.UpdateData(this.canCalculate)
+        })
+    },
+    UpdateData (pcanCalculate) {
+      if (pcanCalculate === true) {
+        AccountService.getAccount(this.transactionData.AccountId)
+          .then(response => {
+            const accountData = response.data
+            this.currentBalance = accountData.balance
+            if (this.transactionData.TransType === 1) {
+              this.newBalance = this.currentBalance - this.transactionData.amount
+            }
+            if (this.transactionData.TransType === 2) {
+              this.newBalance = this.currentBalance + this.transactionData.amount
+            }
+            this.PutData()
+          })
+      }
+    },
+    PutData () {
+      AccountService.putUpdate(this.transactionData.AccountId, {
+        id: this.transactionData.AccountId,
+        balance: this.newBalance,
+        latestDate: this.transactionData.TransDate
+      })
     }
+
   }
 }
 </script>
 
 <style scoped>
-.v-sheet{
-    margin-left: 20px;
-    margin-right: 20px;
+.v-sheet {
+  margin-left: 20px;
+  margin-right: 20px;
 }
 </style>

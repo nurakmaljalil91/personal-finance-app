@@ -3,16 +3,31 @@
     <v-sheet>
       <h1>New Account</h1>
       <v-row>
-        <v-col lg="3"  md="3" sm="12" cols="12" class="align-self-start"><h2>Account ID</h2></v-col>
-        <v-col lg="9"  md="9" sm="12" cols="12" class="align-self-center">
+        <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
+          <h2>Account ID</h2>
+        </v-col>
+        <v-col lg="9" md="9" sm="12" cols="12" class="align-self-center">
           <v-text-field label="Account ID" v-model="newAccountData.id" single-line outlined></v-text-field>
         </v-col>
-        <v-col lg="3"  md="3" sm="12" cols="12" class="align-self-start"><h2>Balance</h2></v-col>
-        <v-col lg="9"  md="9" sm="12" cols="12" class="align-self-center">
-          <v-text-field label="Balance" v-model="newAccountData.balance" type="number" min="0" single-line outlined></v-text-field>
+        <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
+          <h2>Balance</h2>
         </v-col>
-        <v-col cols="6"  class="align-self-center"> <v-btn color="primary" dark @click="submitForm">Submit</v-btn></v-col>
-        <v-col cols="6"  class="align-self-center"> <v-btn color="warning" dark @click="clearForm">Clear</v-btn></v-col>
+        <v-col lg="9" md="9" sm="12" cols="12" class="align-self-center">
+          <v-text-field
+            label="Balance"
+            v-model="newAccountData.balance"
+            type="number"
+            min="0"
+            single-line
+            outlined
+          ></v-text-field>
+        </v-col>
+        <v-col cols="6" class="align-self-center">
+          <v-btn color="primary" dark @click="submitForm">Submit</v-btn>
+        </v-col>
+        <v-col cols="6" class="align-self-center">
+          <v-btn color="warning" dark @click="clearForm">Clear</v-btn>
+        </v-col>
       </v-row>
     </v-sheet>
   </div>
@@ -41,8 +56,11 @@ export default {
       this.newAccountData.latestDate = today
       this.newAccountData.balance = parseFloat(this.newAccountData.balance)
       AccountService.postNewAccount(this.newAccountData)
-       .then( this.$alert("New Account Added!", 'Success','success'))
-       .catch(error => (this.$alert("Something happened!", 'Warning','warning')))
+        .then(this.$alert('New Account Added!', 'Success', 'success'))
+        .catch(error => {
+          console.log(error)
+          this.$alert('Something happened!', 'Warning', 'warning')
+        })
     },
     clearForm () {
       // eslint-disable-next-line no-unused-expressions
@@ -65,8 +83,8 @@ export default {
 </script>
 
 <style scoped>
-.v-sheet{
-    margin-left: 20px;
-    margin-right: 20px;
+.v-sheet {
+  margin-left: 20px;
+  margin-right: 20px;
 }
 </style>

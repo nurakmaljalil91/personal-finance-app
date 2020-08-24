@@ -16,8 +16,8 @@ export default {
         return Axios.post(RESOURCE_NAME, newAccount)
     },
 
-    putUpdate(newData) {
-        return Axios.put(RESOURCE_NAME, newData)
+    putUpdate(id, newData) {
+        return Axios.put(`${RESOURCE_NAME}/${id}`, newData)
     },
 
     deleteAccount(id) {
