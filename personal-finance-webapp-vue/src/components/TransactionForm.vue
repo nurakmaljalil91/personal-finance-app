@@ -44,7 +44,7 @@
           <h2>Type</h2>
         </v-col>
         <v-col lg="9" md="9" sm="12" cols="12" class="align-self-center">
-          <v-text-field label="Type" v-model="transactionData.Type" single-line outlined></v-text-field>
+          <v-select label="Type" :items="ExpenseType" v-model="transactionData.Type" filled outlined></v-select>
         </v-col>
         <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
           <h2>Description</h2>
@@ -73,6 +73,7 @@ export default {
       account: null,
       transferTypes: ['Debit', 'Credit'],
       transterTypeSelection: null,
+      ExpenseType: ['Food', 'Fuel', 'Toll', 'Entertainment'],
       accountList: [],
       transactionData: {
         Id: '',

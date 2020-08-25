@@ -4,6 +4,8 @@
       <v-main>
         <v-container>
           <v-sheet :elevation="13">
+            <h1>Personal Finance</h1>
+            <Total />
             <router-view />
           </v-sheet>
         </v-container>
@@ -13,14 +15,18 @@
 </template>
 
 <script>
+import Total from '@/components/Total'
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    Total
+  }
 }
 </script>
 
 <style>
 #app {
-  background-color: #DBF2FB;
+  background-color: #dbf2fb;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
