@@ -7,6 +7,9 @@
       <v-col>
         <router-link to="/AddTransaction">Add Transaction</router-link>
       </v-col>
+      <v-col>
+        <router-link to="/TransactionHistory">Transaction History</router-link>
+      </v-col>
     </v-row>
     <div v-if="loading" class="loading">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -16,17 +19,20 @@
       <v-icon color="red">fas fa-exclamation-triangle</v-icon>
       <p>error...</p>
     </div>
-    <div v-else v-for="acc in accounts" v-bind:key="acc.id">
-      <v-lazy
-        :options="{
+    <div v-else>
+      <div v-for="acc in accounts" v-bind:key="acc.id">
+        <v-lazy
+          :options="{
           threshold: .5
         }"
-        min-height="200"
-        transition="fade-transition"
-      >
-        <SummaryCard v-bind:accounts="acc" />
-      </v-lazy>
+          min-height="200"
+          transition="fade-transition"
+        >
+          <SummaryCard v-bind:accounts="acc" />
+        </v-lazy>
+      </div>
     </div>
+
     <SummaryCard />
   </div>
 </template>
