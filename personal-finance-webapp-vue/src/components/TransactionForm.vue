@@ -79,7 +79,7 @@ export default {
       account: null,
       transferTypes: ['Debit', 'Credit'],
       transterTypeSelection: null,
-      ExpenseType: ['Food', 'Fuel', 'Toll', 'Entertainment', 'Health', 'Utilities', 'Transport', 'Maintanence'],
+      ExpenseType: ['Food', 'Fuel', 'Toll', 'Entertainment', 'Health', 'Utilities', 'Transport', 'Maintanence', 'Transfer'],
       accountList: [],
       transactionData: {
         Id: '',

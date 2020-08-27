@@ -6,7 +6,7 @@
       <v-data-table
         :headers="headers"
         :items="transactionData"
-        :items-per-page="5"
+        :items-per-page="20"
         class="elevation-1"
       ></v-data-table>
     </div>
