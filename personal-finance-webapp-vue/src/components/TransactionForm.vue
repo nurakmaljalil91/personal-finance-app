@@ -40,6 +40,33 @@
             outlined
           ></v-text-field>
         </v-col>
+          <!-- <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
+          <h2>Date</h2>
+        </v-col>
+        <v-col lg="9" md="9" sm="12" cols="12" class="align-self-center">
+         <v-menu
+            ref="menu1"
+            v-model="menu1"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-text-field
+                v-model="dateFormatted"
+                label="Date"
+                hint="MM/DD/YYYY format"
+                persistent-hint
+                v-bind="attrs"
+                @blur="date = parseDate(dateFormatted)"
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+          </v-menu>
+        </v-col> -->
         <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
           <h2>Type</h2>
         </v-col>
@@ -79,7 +106,7 @@ export default {
       account: null,
       transferTypes: ['Debit', 'Credit'],
       transterTypeSelection: null,
-      ExpenseType: ['Food', 'Fuel', 'Toll', 'Entertainment', 'Health', 'Utilities', 'Transport', 'Maintanence', 'Transfer'],
+      ExpenseType: ['Food', 'Fuel', 'Toll', 'Entertainment', 'Health', 'Utilities', 'Transport', 'Maintanence', 'Transfer', 'Donation', 'Salary', 'Education'],
       accountList: [],
       transactionData: {
         Id: '',
