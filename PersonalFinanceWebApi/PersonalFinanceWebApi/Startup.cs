@@ -28,6 +28,7 @@ namespace PersonalFinanceWebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<AccountContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddApiVersioning();
             services.AddCors();
             services.AddControllers();
         }
