@@ -40,11 +40,11 @@
             outlined
           ></v-text-field>
         </v-col>
-          <!-- <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
+        <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
           <h2>Date</h2>
         </v-col>
         <v-col lg="9" md="9" sm="12" cols="12" class="align-self-center">
-         <v-menu
+          <v-menu
             ref="menu1"
             v-model="menu1"
             :close-on-content-click="false"
@@ -62,11 +62,16 @@
                 v-bind="attrs"
                 @blur="date = parseDate(dateFormatted)"
                 v-on="on"
+                outlined
               ></v-text-field>
             </template>
-            <v-date-picker v-model="date" no-title @input="menu1 = false"></v-date-picker>
+            <v-date-picker
+              v-model="date"
+              no-title
+              @input="menu1 = false"
+            ></v-date-picker>
           </v-menu>
-        </v-col> -->
+        </v-col>
         <v-col lg="3" md="3" sm="12" cols="12" class="align-self-start">
           <h2>Type</h2>
         </v-col>
@@ -83,7 +88,12 @@
           <h2>Description</h2>
         </v-col>
         <v-col lg="9" md="9" sm="12" cols="12" class="align-self-center">
-          <v-text-field label="Description" v-model="transactionData.Desc" single-line outlined></v-text-field>
+          <v-text-field
+            label="Description"
+            v-model="transactionData.Desc"
+            single-line
+            outlined
+          ></v-text-field>
         </v-col>
         <v-col cols="6" class="align-self-center">
           <v-btn color="primary" dark @click="submitForm">Submit</v-btn>
@@ -106,7 +116,20 @@ export default {
       account: null,
       transferTypes: ['Debit', 'Credit'],
       transterTypeSelection: null,
-      ExpenseType: ['Food', 'Fuel', 'Toll', 'Entertainment', 'Health', 'Utilities', 'Transport', 'Maintanence', 'Transfer', 'Donation', 'Salary', 'Education'],
+      ExpenseType: [
+        'Food',
+        'Fuel',
+        'Toll',
+        'Entertainment',
+        'Health',
+        'Utilities',
+        'Transport',
+        'Maintanence',
+        'Transfer',
+        'Donation',
+        'Salary',
+        'Education'
+      ],
       accountList: [],
       transactionData: {
         Id: '',
@@ -119,7 +142,10 @@ export default {
       },
       currentBalance: 0.0,
       newBalance: 0.0,
-      canCalculate: false
+      canCalculate: false,
+      menu1: false
+      // date: new Date().toISOString().substr(0, 10),
+      // dateFormatted: vm.formatDate(new Date().toISOString().substr(0, 10))
     }
   },
   mounted () {
@@ -168,18 +194,21 @@ export default {
     },
     UpdateData (pcanCalculate) {
       if (pcanCalculate === true) {
-        AccountService.getAccount(this.transactionData.AccountId)
-          .then(response => {
+        AccountService.getAccount(this.transactionData.AccountId).then(
+          response => {
             const accountData = response.data
             this.currentBalance = accountData.balance
             if (this.transactionData.TransType === 1) {
-              this.newBalance = this.currentBalance - this.transactionData.amount
+              this.newBalance =
+                this.currentBalance - this.transactionData.amount
             }
             if (this.transactionData.TransType === 2) {
-              this.newBalance = this.currentBalance + this.transactionData.amount
+              this.newBalance =
+                this.currentBalance + this.transactionData.amount
             }
             this.PutData()
-          })
+          }
+        )
       }
     },
     PutData () {
@@ -189,7 +218,6 @@ export default {
         latestDate: this.transactionData.TransDate
       })
     }
-
   }
 }
 </script>
