@@ -107,6 +107,8 @@ INSERT INTO  transactions ( transaction_id ,account_id ,transaction_name,transac
     20.00
 );
 
+UPDATE  transactions SET transaction_id= ,account_id= ,transaction_name=,transaction_type=,expense_type=,transaction_place=,total=,transaction_date= ;
+
 INSERT INTO  history ( history_id,account_id, user_id,account_name,balance,total_debit,total_credit) VALUES (
     '131120UPD',
     'MAY001', 
