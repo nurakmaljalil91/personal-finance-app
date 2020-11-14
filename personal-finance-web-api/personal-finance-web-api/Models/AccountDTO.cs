@@ -7,8 +7,9 @@ namespace personal_finance_web_api.Models
 {
     public class AccountDTO
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public float Balance { get; set; }
-        public DateTime LastUpdate { get; set; }
+        public DateTime? LastUpdate { get; set; }
     }
 }

@@ -9,9 +9,9 @@ namespace personal_finance_web_api.Models
     public class Account
     {
         [Required]
-        public string Id;
+        public string Id { get; set; }
         [Required]
-        public string UserId;
+        public string UserId { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

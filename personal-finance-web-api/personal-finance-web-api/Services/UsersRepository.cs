@@ -90,7 +90,7 @@ namespace personal_finance_web_api.Services
                 {
                     command.CommandText = sqlString;
                     command.CommandType = CommandType.Text;
-                 
+
                     await command.ExecuteNonQueryAsync();
                 }
 
@@ -106,25 +106,47 @@ namespace personal_finance_web_api.Services
         {
             return await WithConnection(async conn =>
             {
-
+                var checkId = $"SELECT EXISTS(SELECT 1 FROM {usersTable} WHERE user_id='{user.Id}')";
                 var sqlString = $"UPDATE {usersTable} SET " +
-                $"fullname = '{user.Fullname}'" +
-                $"username = '{user.Username}'" +
-                $"password = '{user.Password}'" +
-                $"email = '{user.Email}'" +
+                $"fullname = '{user.Fullname}', " +
+                $"username = '{user.Username}', " +
+                $"password = '{user.Password}', " +
+                $"email = '{user.Email}' " +
                 $" WHERE user_id = '{user.Id}'; ";
 
-
+                var succes = false;
+                var message = new Message();
                 using (DbCommand command = conn.CreateCommand())
                 {
-                    command.CommandText = sqlString;
+
+                    command.CommandText = checkId;
                     command.CommandType = CommandType.Text;
 
-                    await command.ExecuteNonQueryAsync();
+                    using (DbDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                succes = reader.GetBoolean(reader.GetOrdinal("exists"));
+                            }
+                        }
+                        reader.Close();
+                    }
+
+                    if (succes)
+                    {
+                        command.CommandText = sqlString;
+                        command.CommandType = CommandType.Text;
+                        await command.ExecuteNonQueryAsync();
+                        message.Status = $"Success update the user with user id {user.Id}";
+                    }
+                    else
+                    {
+                        message.Status = $"No user with user id {user.Id}";
+                    }
                 }
 
-                var message = new Message();
-                message.Status = $"Success update the user with user id {user.Id}";
                 message.Created = DateTime.Now;
 
                 return message;
@@ -141,17 +163,17 @@ namespace personal_finance_web_api.Services
                 var message = new Message();
                 using (DbCommand command = conn.CreateCommand())
                 {
-                   
+
                     command.CommandText = checkId;
                     command.CommandType = CommandType.Text;
-                    
+
                     using (DbDataReader reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                         {
                             while (await reader.ReadAsync())
                             {
-                                succes = reader.GetBoolean(reader.GetOrdinal("exists")); 
+                                succes = reader.GetBoolean(reader.GetOrdinal("exists"));
                             }
                         }
                         reader.Close();
@@ -159,6 +181,8 @@ namespace personal_finance_web_api.Services
 
                     if (succes)
                     {
+                        command.CommandText = sqlString;
+                        command.CommandType = CommandType.Text;
                         await command.ExecuteNonQueryAsync();
                         message.Status = $"Success delete the user with user id {userId}";
                     }
@@ -166,7 +190,7 @@ namespace personal_finance_web_api.Services
                     {
                         message.Status = $"No user with user id {userId}";
                     }
-                        
+
                 }
 
                 message.Created = DateTime.Now;

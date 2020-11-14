@@ -12,11 +12,11 @@ namespace personal_finance_web_api.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly UsersRepository _usersRepository;
 
-        public UserController(UsersRepository usersRepository)
+        public UsersController(UsersRepository usersRepository)
         {
             _usersRepository = usersRepository;
         }
