@@ -71,6 +71,9 @@ INSERT INTO users(user_id, fullname, username, password,email,status) VALUES ('M
 -- INSERT INTO accounts (account_id ,user_id ,account_name ,balance ) VALUES ('WALLET001','MYORI001', 'Wallet', 283213000.00);
 INSERT INTO accounts (account_id ,user_id ,account_name ,balance ) VALUES ('MAY151034691870','MYAKMAL001', 'MAYBANK Saving Account-i', 8184.57);
 INSERT INTO accounts (account_id ,user_id ,account_name ,balance ) VALUES ('MAY501422245175','MYAKMAL001', 'MAYBANK Premeier 1 Account', 650.40);
+INSERT INTO accounts (account_id ,user_id ,account_name ,balance ) VALUES ('WALLET001','MYAKMAL001', 'Wallet',72.95);
+INSERT INTO accounts (account_id ,user_id ,account_name ,balance ) VALUES ('HSBC368197620025','MYAKMAL001', 'HSBC Basic Savings Account',58.71);
+
 INSERT INTO accounts (account_id ,user_id ,account_name ,balance ) VALUES ('MAY001','MYTEST001', 'MAYBANK SAVING ACCOUNT', 283213000.00);
 INSERT INTO accounts (account_id ,user_id ,account_name ,balance ) VALUES ('CIMB001','MYTEST002', 'CIMB SAVING ACCOUNT', 1000.00);
 
@@ -121,3 +124,14 @@ CREATE SCHEMA public;
 -- If you are using PostgreSQL 9.3 or greater, you may also need to restore the default grants.
 GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO public;
+
+{
+	"id": "MYTEST005",
+	"fullname": "Test_05",
+	"username": "test05",
+	"password": "1345678",
+	"email": "test5@tmail.com",
+	"status": 2
+}
+
+select exists(select 1 from users where user_id='MYAKMAL001')
