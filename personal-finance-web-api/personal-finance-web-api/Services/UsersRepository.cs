@@ -15,7 +15,7 @@ namespace personal_finance_web_api.Services
 
         public UsersRepository(DbConnection connection) : base(connection) { }
 
-        public async Task<IEnumerable<User>> ReadUsers()
+        public async Task<IEnumerable<UserDTO>> ReadUsers()
         {
             return await WithConnection(async conn =>
             {
@@ -23,14 +23,14 @@ namespace personal_finance_web_api.Services
                 command.CommandText = $"SELECT * FROM {usersTable};";
                 command.CommandType = CommandType.Text;
 
-                var query = new List<User>();
+                var query = new List<UserDTO>();
                 using (DbDataReader reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)
                     {
                         while (await reader.ReadAsync())
                         {
-                            query.Add(new User
+                            query.Add(new UserDTO
                             {
                                 Fullname = reader.IsDBNull(reader.GetOrdinal("fullname")) ? string.Empty : reader.GetString(reader.GetOrdinal("fullname")),
                                 Username = reader.IsDBNull(reader.GetOrdinal("username")) ? string.Empty : reader.GetString(reader.GetOrdinal("username")),
@@ -45,7 +45,7 @@ namespace personal_finance_web_api.Services
             });
         }
 
-        public async ValueTask<User> ReadUser(string userId)
+        public async ValueTask<UserDTO> ReadUser(string userId)
         {
             return await WithConnection(async conn =>
             {
@@ -53,7 +53,7 @@ namespace personal_finance_web_api.Services
                 command.CommandText = $"SELECT * FROM {usersTable} WHERE user_id='{userId}';";
                 command.CommandType = CommandType.Text;
 
-                var user = new User();
+                var user = new UserDTO();
                 using (DbDataReader reader = command.ExecuteReader())
                 {
                     if (reader.HasRows)

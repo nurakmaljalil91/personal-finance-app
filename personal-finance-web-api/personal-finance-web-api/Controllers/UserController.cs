@@ -22,14 +22,14 @@ namespace personal_finance_web_api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<User>> ReadUsers()
+        public async Task<ActionResult<UserDTO>> ReadUsers()
         {
             var users = await _usersRepository.ReadUsers();
             return Ok(users);
         }
 
         [HttpGet("{userId}")]
-        public async Task<ActionResult<User>> ReadUser(string userId)
+        public async Task<ActionResult<UserDTO>> ReadUser(string userId)
         {
             var user = await _usersRepository.ReadUser(userId);
             if (user == null)
