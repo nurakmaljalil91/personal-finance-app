@@ -35,7 +35,8 @@ namespace personal_finance_web_api.Services
                                 Fullname = reader.IsDBNull(reader.GetOrdinal("fullname")) ? string.Empty : reader.GetString(reader.GetOrdinal("fullname")),
                                 Username = reader.IsDBNull(reader.GetOrdinal("username")) ? string.Empty : reader.GetString(reader.GetOrdinal("username")),
                                 Email = reader.IsDBNull(reader.GetOrdinal("email")) ? string.Empty : reader.GetString(reader.GetOrdinal("email")),
-                                Status = reader.IsDBNull(reader.GetOrdinal("status")) ? 0 : reader.GetInt32(reader.GetOrdinal("status"))
+                                Status = reader.IsDBNull(reader.GetOrdinal("status")) ? 0 : reader.GetInt32(reader.GetOrdinal("status")),
+                                ImageLink = reader.IsDBNull(reader.GetOrdinal("image_link")) ? string.Empty : reader.GetString(reader.GetOrdinal("image_link"))
                             });
                         }
                     }
@@ -65,6 +66,7 @@ namespace personal_finance_web_api.Services
                             user.Username = reader.IsDBNull(reader.GetOrdinal("username")) ? string.Empty : reader.GetString(reader.GetOrdinal("username"));
                             user.Email = reader.IsDBNull(reader.GetOrdinal("email")) ? string.Empty : reader.GetString(reader.GetOrdinal("email"));
                             user.Status = reader.IsDBNull(reader.GetOrdinal("status")) ? 0 : reader.GetInt32(reader.GetOrdinal("status"));
+                            user.ImageLink = reader.IsDBNull(reader.GetOrdinal("image_link")) ? string.Empty : reader.GetString(reader.GetOrdinal("image_link"));
 
                         }
                     }
@@ -112,6 +114,7 @@ namespace personal_finance_web_api.Services
                 $"username = '{user.Username}', " +
                 $"password = '{user.Password}', " +
                 $"email = '{user.Email}' " +
+                $"image_link = '{user.ImageLink}' " +
                 $" WHERE user_id = '{user.Id}'; ";
 
                 var succes = false;

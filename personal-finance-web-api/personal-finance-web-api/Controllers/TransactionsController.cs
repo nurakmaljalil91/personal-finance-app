@@ -16,9 +16,11 @@ namespace personal_finance_web_api.Controllers
     {
         private readonly TransactionsRepository _transactionsRepository;
 
+
         public TransactionsController(TransactionsRepository transactionsRepository)
         {
             _transactionsRepository = transactionsRepository;
+
         }
 
         [HttpGet]
@@ -44,7 +46,6 @@ namespace personal_finance_web_api.Controllers
         public async Task<ActionResult<Message>> CreateTransaction([FromBody] Transaction transaction)
         {
             var created = await _transactionsRepository.CreateTransaction(transaction);
-
             return Ok(created);
         }
 

@@ -12,6 +12,7 @@ namespace personal_finance_web_api.Services
     {
         private string accountsTable = "accounts";
 
+
         public AccountsRepository(DbConnection connection) : base(connection) { }
 
         public async Task<IEnumerable<AccountDTO>> ReadAccounts()
@@ -34,7 +35,8 @@ namespace personal_finance_web_api.Services
                                 Id = reader.IsDBNull(reader.GetOrdinal("account_id")) ? string.Empty : reader.GetString(reader.GetOrdinal("account_id")),
                                 Name = reader.IsDBNull(reader.GetOrdinal("account_name")) ? string.Empty : reader.GetString(reader.GetOrdinal("account_name")),
                                 Balance = reader.IsDBNull(reader.GetOrdinal("balance")) ? 0 : reader.GetFloat(reader.GetOrdinal("balance")),
-                                LastUpdate = reader.IsDBNull(reader.GetOrdinal("updated_at")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("updated_at"))
+                                LastUpdate = reader.IsDBNull(reader.GetOrdinal("updated_at")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("updated_at")),
+                                ImageLink = reader.IsDBNull(reader.GetOrdinal("image_link")) ? string.Empty : reader.GetString(reader.GetOrdinal("image_link"))
 
                             });
                         }
@@ -65,6 +67,7 @@ namespace personal_finance_web_api.Services
                             account.Name = reader.IsDBNull(reader.GetOrdinal("account_name")) ? string.Empty : reader.GetString(reader.GetOrdinal("account_name"));
                             account.Balance = reader.IsDBNull(reader.GetOrdinal("balance")) ? 0 : reader.GetFloat(reader.GetOrdinal("balance"));
                             account.LastUpdate = reader.IsDBNull(reader.GetOrdinal("updated_at")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("updated_at"));
+                            account.ImageLink = reader.IsDBNull(reader.GetOrdinal("image_link")) ? string.Empty : reader.GetString(reader.GetOrdinal("image_link"));
                         }
                     }
                     reader.Close();
@@ -94,7 +97,8 @@ namespace personal_finance_web_api.Services
                                 Id = reader.IsDBNull(reader.GetOrdinal("account_id")) ? string.Empty : reader.GetString(reader.GetOrdinal("account_id")),
                                 Name = reader.IsDBNull(reader.GetOrdinal("account_name")) ? string.Empty : reader.GetString(reader.GetOrdinal("account_name")),
                                 Balance = reader.IsDBNull(reader.GetOrdinal("balance")) ? 0 : reader.GetFloat(reader.GetOrdinal("balance")),
-                                LastUpdate = reader.IsDBNull(reader.GetOrdinal("updated_at")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("updated_at"))
+                                LastUpdate = reader.IsDBNull(reader.GetOrdinal("updated_at")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("updated_at")),
+                                ImageLink = reader.IsDBNull(reader.GetOrdinal("image_link")) ? string.Empty : reader.GetString(reader.GetOrdinal("image_link"))
 
                             });
                         }
@@ -161,7 +165,7 @@ namespace personal_finance_web_api.Services
 
                 var checkId = $"SELECT EXISTS(SELECT 1 FROM {accountsTable} WHERE account_id='{account.Id}')";
                 var sqlString = $"UPDATE {accountsTable} SET user_id='{account.UserId}', account_name = '{account.Name}', " +
-                $"balance={account.Balance} WHERE account_id='{account.Id}'; ";
+                $"balance={account.Balance}, image_link='{account.ImageLink}' WHERE account_id='{account.Id}'; ";
 
                 var succes = false;
                 var message = new Message();
@@ -237,7 +241,7 @@ namespace personal_finance_web_api.Services
                     }
                     else
                     {
-                        
+
                         message.Status = $"No account with account id {accountId}";
                     }
 

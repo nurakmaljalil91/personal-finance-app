@@ -24,5 +24,7 @@ namespace personal_finance_web_api.Models
         public float Total { get; set; }
         [Required]
         public DateTime TransactionDate { get; set; }
+        [Required]
+        public string ImageLink { get; set; }
     }
 }

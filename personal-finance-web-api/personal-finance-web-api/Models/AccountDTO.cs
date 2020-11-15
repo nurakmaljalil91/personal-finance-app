@@ -11,5 +11,7 @@ namespace personal_finance_web_api.Models
         public string Name { get; set; }
         public float Balance { get; set; }
         public DateTime? LastUpdate { get; set; }
+        
+        public string ImageLink { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace personal_finance_web_api.Services
     public class TransactionsRepository : BaseRepository
     {
         private string transactionTable = "transactions";
+        private string accountsTable = "accounts";
         public TransactionsRepository(DbConnection connection) : base(connection) { }
 
         public async Task<IEnumerable<Transaction>> ReadTransactions()
@@ -36,7 +38,8 @@ namespace personal_finance_web_api.Services
                                 Type = reader.IsDBNull(reader.GetOrdinal("transaction_type")) ? 3 : reader.GetInt16(reader.GetOrdinal("transaction_type")),
                                 Place = reader.IsDBNull(reader.GetOrdinal("transaction_place")) ? string.Empty : reader.GetString(reader.GetOrdinal("transaction_place")),
                                 Total = reader.IsDBNull(reader.GetOrdinal("total")) ? 0 : reader.GetFloat(reader.GetOrdinal("total")),
-                                TransactionDate = reader.IsDBNull(reader.GetOrdinal("transaction_date")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("transaction_date"))
+                                TransactionDate = reader.IsDBNull(reader.GetOrdinal("transaction_date")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("transaction_date")),
+                                ImageLink = reader.IsDBNull(reader.GetOrdinal("image_link")) ? string.Empty : reader.GetString(reader.GetOrdinal("image_link"))
 
                             });
                         }
@@ -73,7 +76,8 @@ namespace personal_finance_web_api.Services
                                 Type = reader.IsDBNull(reader.GetOrdinal("transaction_type")) ? 3 : reader.GetInt16(reader.GetOrdinal("transaction_type")),
                                 Place = reader.IsDBNull(reader.GetOrdinal("transaction_place")) ? string.Empty : reader.GetString(reader.GetOrdinal("transaction_place")),
                                 Total = reader.IsDBNull(reader.GetOrdinal("total")) ? 0 : reader.GetFloat(reader.GetOrdinal("total")),
-                                TransactionDate = reader.IsDBNull(reader.GetOrdinal("transaction_date")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("transaction_date"))
+                                TransactionDate = reader.IsDBNull(reader.GetOrdinal("transaction_date")) ? DateTime.Now : reader.GetDateTime(reader.GetOrdinal("transaction_date")),
+                                ImageLink = reader.IsDBNull(reader.GetOrdinal("image_link")) ? string.Empty : reader.GetString(reader.GetOrdinal("image_link"))
                             });
                         }
                     }
@@ -89,17 +93,25 @@ namespace personal_finance_web_api.Services
             return await WithConnection(async conn =>
             {
 
-                var checkId = $"SELECT EXISTS(SELECT 1 FROM {transactionTable} WHERE account_id='{transaction.AccountId}')";
+                
+                var getBalance = $"SELECT balance FROM {accountsTable} WHERE account_id='{transaction.AccountId}';";
+
+                var date = transaction.TransactionDate.Date;
+                var convertedDate = $"{date.Year}-{date.Month}-{date.Day}";
+
                 var sqlString = $"INSERT INTO  {transactionTable} " +
                 $"( transaction_id ,account_id ,transaction_name,transaction_type,expense_type,transaction_place,total,transaction_date ) " +
-                $"VALUES ('{transaction.Id}','{transaction.AccountId}','{transaction.Name}',{transaction.Total},'{transaction.Type}','{transaction.ExpenseType}'," +
-                $" '{transaction.Place}', {transaction.Total}, '{transaction.TransactionDate}'); ";
+                $"VALUES ('{transaction.Id}','{transaction.AccountId}','{transaction.Name}','{transaction.Type}','{transaction.ExpenseType}'," +
+                $" '{transaction.Place}', {transaction.Total}, '{convertedDate}'); ";
+
+                float balance = 0;
+
                 var exist = false;
                 var message = new Message();
                 using (DbCommand command = conn.CreateCommand())
                 {
 
-                    command.CommandText = checkId;
+                    command.CommandText = getBalance;
                     command.CommandType = CommandType.Text;
 
                     using (DbDataReader reader = command.ExecuteReader())
@@ -108,8 +120,13 @@ namespace personal_finance_web_api.Services
                         {
                             while (await reader.ReadAsync())
                             {
-                                exist = reader.GetBoolean(reader.GetOrdinal("exists"));
+                                exist = true;
+                                balance = reader.IsDBNull(reader.GetOrdinal("balance")) ? 0 : reader.GetFloat(reader.GetOrdinal("balance"));
                             }
+                        }
+                        else
+                        {
+                            exist = false;
                         }
                         reader.Close();
                     }
@@ -119,6 +136,21 @@ namespace personal_finance_web_api.Services
                         command.CommandText = sqlString;
                         command.CommandType = CommandType.Text;
                         await command.ExecuteNonQueryAsync();
+                        if(transaction.Type == 0)
+                        {
+                            var newBalance = balance - transaction.Total;
+                            command.CommandText = $"UPDATE {accountsTable} SET balance={newBalance} WHERE account_id='{transaction.AccountId}'; ";
+                            command.CommandType = CommandType.Text;
+                            await command.ExecuteNonQueryAsync();
+                        }
+                        else
+                        {
+                            var newBalance = balance + transaction.Total;
+                            command.CommandText = $"UPDATE {accountsTable} SET balance={newBalance} WHERE account_id='{transaction.AccountId}'; ";
+                            command.CommandType = CommandType.Text;
+                            await command.ExecuteNonQueryAsync();
+                        }
+                        
                         message.Status = $"Succes created the transaction for account id {transaction.AccountId}";
                     }
                     else
@@ -140,6 +172,8 @@ namespace personal_finance_web_api.Services
             {
 
                 var checkId = $"SELECT EXISTS(SELECT 1 FROM {transactionTable} WHERE transaction_id='{transaction.Id}')";
+                var date = transaction.TransactionDate.Date;
+                var convertedDate = $"{date.Year}-{date.Month}-{date.Day}";
                 var sqlString = $"UPDATE {transactionTable} SET " +
                 $"transaction_id= {transaction.Id}," +
                 $"account_id={transaction.AccountId} ," +
@@ -148,7 +182,8 @@ namespace personal_finance_web_api.Services
                 $"expense_type={transaction.ExpenseType}," +
                 $"transaction_place={transaction.Place}," +
                 $"total={transaction.Total}," +
-                $"transaction_date= {transaction.TransactionDate}; ";
+                $"transaction_date= {convertedDate}, " +
+                $"image_link='{transaction.ImageLink}';";
 
                 var succes = false;
                 var message = new Message();
@@ -226,7 +261,7 @@ namespace personal_finance_web_api.Services
                     {
 
                         message.Status = $"No transaction with transaction id {transactionId}";
-                        
+
                     }
 
                 }

@@ -17,6 +17,8 @@ namespace personal_finance_web_api.Models
         [Required]
         [Range(0.00, 9999999999.00, ErrorMessage = "Price must be between 0.00 and 9999999999.00")]
         public float Balance { get; set; }
+        [Required]
+        public string ImageLink { get; set; }
 
     }
 }

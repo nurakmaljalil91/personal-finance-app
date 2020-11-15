@@ -11,5 +11,7 @@ namespace personal_finance_web_api.Models
         public string Username { get; set; }
         public string Email { get; set; }
         public int Status { get; set; }
+        
+        public string ImageLink { get; set; }
     }
 }

@@ -37,6 +37,7 @@ namespace personal_finance_web_api
             });
             services.AddTransient<UsersRepository>();
             services.AddTransient<AccountsRepository>();
+            services.AddTransient<TransactionsRepository>();
             services.AddControllers();
         }
 

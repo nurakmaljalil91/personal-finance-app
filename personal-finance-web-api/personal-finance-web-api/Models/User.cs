@@ -24,5 +24,8 @@ namespace personal_finance_web_api.Models
         public string Email { get; set; }
         [Required]
         public int Status { get; set; }
+
+        [Required]
+        public string ImageLink { get; set; }
     }
 }

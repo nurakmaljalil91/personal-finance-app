@@ -137,3 +137,18 @@ GRANT ALL ON SCHEMA public TO public;
 }
 
 select exists(select 1 from users where user_id='MYAKMAL001')
+
+CREATE TABLE subscriptions (
+	serial_id SERIAL  ,
+    subscription_id VARCHAR(50) PRIMARY KEY NOT NULL,
+    account_id VARCHAR(50),
+    name TEXT,
+    total NUMERIC,
+	subscription_type VARCHAR(50),
+	every VARCHAR(50)
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_accounts
+        FOREIGN KEY(account_id)
+            REFERENCES accounts(account_id)
+            ON DELETE CASCADE
+);
