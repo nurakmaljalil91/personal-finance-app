@@ -35,6 +35,7 @@ namespace personal_finance_web_api
                     ConnectionString = Configuration.GetConnectionString("DefaultConnection")
                 };
             });
+            services.AddCors();
             services.AddTransient<UsersRepository>();
             services.AddTransient<AccountsRepository>();
             services.AddTransient<TransactionsRepository>();
@@ -52,6 +53,8 @@ namespace personal_finance_web_api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); // This rule allow any origin
 
             app.UseAuthorization();
 
