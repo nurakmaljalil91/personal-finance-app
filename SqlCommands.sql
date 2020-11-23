@@ -39,16 +39,19 @@ EXECUTE PROCEDURE trigger_set_timestamp();
 CREATE TABLE transactions (
 	serial_id SERIAL  ,
     transaction_id VARCHAR(50) PRIMARY KEY NOT NULL,
+    user_id VARCHAR(50),
     account_id VARCHAR(50),
     transaction_name TEXT,
     transaction_type SMALLINT,
     expense_type VARCHAR(50),
     transaction_place VARCHAR(50),
+    transaction_date VARCHAR(50),
     total NUMERIC,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT fk_accounts
-        FOREIGN KEY(account_id)
-            REFERENCES accounts(account_id)
+    image_link TEXT,
+    CONSTRAINT fk_users
+        FOREIGN KEY(user_id)
+            REFERENCES users(user_id)
             ON DELETE CASCADE
 );
 
@@ -64,6 +67,22 @@ CREATE TABLE history (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE todos (
+	serial_id SERIAL  ,
+    todo_id VARCHAR(50) PRIMARY KEY NOT NULL,
+    user_id VARCHAR(50) NOT NULL,
+    description TEXT NOT NULL,
+	complete BOOLEAN NOT NULL,
+	complete_date TIMESTAMP NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+	CONSTRAINT fk_users
+       FOREIGN KEY(user_id)
+           REFERENCES users(user_id)
+           ON DELETE CASCADE
+);
+
+INSERT INTO todos(todo_id, user_id, description, complete) VALUES ('d13b970c-872a-4574-90c4-5c489657ce3e', 'MYAKMAL001', 'Fill ATMS for this week and last week', false);
+
 INSERT INTO users(user_id, fullname, username, password,email,status) VALUES ('MYAKMAL001','Nur Akmal Jalil', 'arcmole007', '12345678','nurakmaljalil91@gmail.com',1);
 INSERT INTO users(user_id, fullname, username, password,email,status) VALUES ('MYTEST001','Test_01', 'test01', '12345678','test1@tmail.com',2);
 INSERT INTO users(user_id, fullname, username, password,email,status) VALUES ('MYTEST002','Test_02', 'test02', '12345678','test2@tmail.com',2);
@@ -77,34 +96,52 @@ INSERT INTO accounts (account_id ,user_id ,account_name ,balance ) VALUES ('HSBC
 INSERT INTO accounts (account_id ,user_id ,account_name ,balance ) VALUES ('MAY001','MYTEST001', 'MAYBANK SAVING ACCOUNT', 283213000.00);
 INSERT INTO accounts (account_id ,user_id ,account_name ,balance ) VALUES ('CIMB001','MYTEST002', 'CIMB SAVING ACCOUNT', 1000.00);
 
-INSERT INTO transactions ( transaction_id ,account_id ,transaction_name,transaction_type,expense_type,transaction_place,total ) VALUES (
-    '131120F001Qwh537', 
+INSERT INTO transactions ( transaction_id , user_id,account_id ,transaction_name,transaction_type,expense_type,transaction_place,transaction_date,total ) VALUES (
+    'bb498235-661a-409a-a9f2-607c188b029c', 
+    'MYTEST001',
     'MAY001',
     'Popcorn',
     0,
     'Food',
     'Petronas',
+    '2020-11-21',
     20.00
 );
 
-INSERT INTO  transactions ( transaction_id ,account_id ,transaction_name,transaction_type,expense_type,transaction_place,total ) VALUES (
-    '131120F001Qwd547', 
+INSERT INTO  transactions ( transaction_id ,user_id,account_id ,transaction_name,transaction_type,expense_type,transaction_place,transaction_date,total ) VALUES (
+    '77bc30bd-d0a5-4023-9c2c-3996d56534ae', 
+    'MYTEST002',
+     'CIMB001',
+    'Wonda Cofee',
+    0,
+    'Food',
+    '4.5',
+    '2020-11-21',
+    20.00
+);
+
+INSERT INTO  transactions ( transaction_id ,user_id,account_id ,transaction_name,transaction_type,expense_type,transaction_place,transaction_date,total ) VALUES (
+    'f7929fed-8abf-4846-be84-e2d5e9925fe7', 
+       'MYTEST002',
     'CIMB001',
     'Wonda Cofee',
     0,
     'Food',
     '4.5',
+    '2020-11-21',
     20.00
 );
 
-INSERT INTO  transactions ( transaction_id ,account_id ,transaction_name,transaction_type,expense_type,transaction_place,total ) VALUES (
-    '131120F001Qwd547', 
-    'CIMB001',
-    'Wonda Cofee',
+INSERT INTO  transactions ( transaction_id ,user_id,account_id ,transaction_name,transaction_type,expense_type,transaction_place,transaction_date,total ) VALUES (
+    '0fa59c6e-3722-4314-8568-08fa60ecb8c6', 
+    'MYAKMAL001',
+    'WALLET001',
+    'Roti kosong, roti telur, roti kaya, kopi tarik',
     0,
     'Food',
-    '4.5',
-    20.00
+    'Bismi Bistro',
+    '2020-11-21',
+    8.1
 );
 
 UPDATE  transactions SET transaction_id= ,account_id= ,transaction_name=,transaction_type=,expense_type=,transaction_place=,total=,transaction_date= ;
@@ -141,14 +178,37 @@ select exists(select 1 from users where user_id='MYAKMAL001')
 CREATE TABLE subscriptions (
 	serial_id SERIAL  ,
     subscription_id VARCHAR(50) PRIMARY KEY NOT NULL,
+    user_id VARCHAR(50),
     account_id VARCHAR(50),
     name TEXT,
     total NUMERIC,
 	subscription_type VARCHAR(50),
-	every VARCHAR(50)
+	every VARCHAR(50),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT fk_accounts
-        FOREIGN KEY(account_id)
-            REFERENCES accounts(account_id)
+    CONSTRAINT fk_users
+        FOREIGN KEY(user_id)
+            REFERENCES users(user_id)
             ON DELETE CASCADE
 );
+
+INSERT INTO  subscriptions ( subscription_id,user_id,account_id, name,total,subscription_type,every) VALUES (
+    'MICROSOFT2481931296',
+    'MYAKMAL001', 
+    'MAY151034691870',
+    'Microsoft 365 Personal',
+    269.00,
+    'Yearly',
+    '2020-12-01'
+); 
+
+INSERT INTO  subscriptions ( subscription_id,user_id,account_id, name,total,subscription_type,every) VALUES (
+    'SPOTIFYPREMIUM001',
+    'MYAKMAL001', 
+    'HSBC368197620025',
+    'Spotify Premium Plan',
+    14.90,
+    'Monthly',
+    '11-29'
+); 
+
+UPDATE todos SET complete=true, complete_date='' WHERE todo_id='';
