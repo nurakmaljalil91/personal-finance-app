@@ -23,6 +23,37 @@ CREATE TABLE accounts (
             ON DELETE CASCADE
 );
 
+CREATE TABLE calendars (
+	serial_id SERIAL  ,
+    calendar_id VARCHAR(50) PRIMARY KEY NOT NULL,
+    user_id VARCHAR(50),
+    calendar_name TEXT,
+    calendar_details TEXT,
+    calendar_start TEXT,
+    calendar_end TEXT, 
+    calendar_color TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_users
+        FOREIGN KEY(user_id)
+            REFERENCES users(user_id)
+            ON DELETE CASCADE
+);
+
+
+CREATE TABLE chatrooms (
+	serial_id SERIAL,
+    chat_id VARCHAR(50) PRIMARY KEY NOT NULL,
+    user_id VARCHAR(50),
+    message TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT fk_users
+        FOREIGN KEY(user_id)
+            REFERENCES users(user_id)
+            ON DELETE CASCADE
+);
+
+
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
